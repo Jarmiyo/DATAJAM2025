@@ -8,13 +8,14 @@ df = pd.read_csv("Oil and Gas 1932-2014.csv")
 # --- Create lag features ---
 df["oil_prod_lag1"] = df["oil_prod32_14"].shift(1)
 df["oil_prod_lag2"] = df["oil_prod32_14"].shift(2)
-df = df.loc[df['cty_name'] == "Bangladesh"]
+df = df.loc[df['cty_name'] == "Papua New Guinea"]
+
+# CITY OF Brunei is successful
+# CITY OF Norway is successful
 
 features = [
     "oil_prod_lag1",
     "oil_prod_lag2",
-    "oil_price_2000",
-    "oil_price_nom",
     "net_oil_exports",
     "population",
     "year"
@@ -61,7 +62,7 @@ plt.figure(figsize=(10,5))
 plt.plot(test["year"], y_test, label="Actual", linewidth=3)
 plt.plot(test["year"], y_pred, label="Predicted", linewidth=3)
 plt.legend()
-plt.title("Oil Production: Actual vs Predicted")
+plt.title("Papua New Guinea")
 plt.xlabel("Year")
 plt.ylabel("Oil Production")
 plt.show()
