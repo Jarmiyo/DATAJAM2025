@@ -1,9 +1,6 @@
 import pandas as pd
 
 
-
-import pandas as pd
-
 df = pd.read_csv("Oil and Gas 1932-2014.csv")
 
 # --- Create lag features ---
