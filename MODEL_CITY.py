@@ -7,7 +7,9 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 df = pd.read_csv("Oil and Gas 1932-2014.csv")
 print(len(df))
 
+
 df = df.dropna(subset=["oil_prod32_14"])
+
 print(len(df))
 
 # Lag features
@@ -37,12 +39,12 @@ features = [
 df["log_oil"] = np.log1p(df["oil_prod32_14"])
 target = "log_oil"
 
-df_model = df[features + [target]].dropna()
+df_model = df[["cty_name"] + features + [target]].dropna()
 
 print("full dataset:")
 print(len(df_model))
 
-test_pool = df_model[df_model["year"] > 2000]
+test_pool = df_model[df_model["year"] > 1932]
 test = test_pool.sample(frac=0.2, random_state=42)
 train = df_model
 
@@ -88,10 +90,42 @@ plt.xlabel("Year")
 plt.ylabel("Oil Production")
 plt.show()
 
-print(df["cty_name"].nunique())
+# print(df["cty_name"].nunique())
 
 #importances = model.feature_importances_
 #plt.figure(figsize=(8,4))
 #plt.barh(features, importances)
 #plt.title("Feature Importance")
 #plt.show()
+# MSE
+# Pick any index from the test set
+# Choose any index from the test set
+idx = 5
+
+# Extract values
+year_value = int(test.iloc[idx]["year"])
+
+actual_log = y_test.iloc[idx]
+pred_log = y_pred[idx]
+
+actual_real = np.expm1(actual_log)  # back-transform log
+pred_real = np.expm1(pred_log)
+
+# Convert barrels → gallons (if dataset uses barrels)
+actual_gallons = actual_real * 42
+pred_gallons = pred_real * 42
+
+print("=== Global Oil Production Prediction Details ===")
+print(f"Year: {year_value}")
+
+print("\n--- Log Scale ---")
+print(f"Actual (log):     {actual_log}")
+print(f"Predicted (log):  {pred_log}")
+
+print("\n--- Real Scale (Barrels) ---")
+print(f"Actual:           {actual_real:,.2f} barrels")
+print(f"Predicted:        {pred_real:,.2f} barrels")
+
+print("\n--- Real Scale (Gallons) ---")
+print(f"Actual:           {actual_gallons:,.2f} gallons")
+print(f"Predicted:        {pred_gallons:,.2f} gallons")
