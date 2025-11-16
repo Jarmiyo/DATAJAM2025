@@ -90,8 +90,8 @@ plt.show()
 
 print(df["cty_name"].nunique())
 
-importances = model.feature_importances_
-plt.figure(figsize=(8,4))
-plt.barh(features, importances)
-plt.title("Feature Importance")
-plt.show()
+#importances = model.feature_importances_
+#plt.figure(figsize=(8,4))
+#plt.barh(features, importances)
+#plt.title("Feature Importance")
+#plt.show()
