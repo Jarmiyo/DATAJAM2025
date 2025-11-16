@@ -44,9 +44,18 @@ df_model = df[["cty_name"] + features + [target]].dropna()
 print("full dataset:")
 print(len(df_model))
 
-test_pool = df_model[df_model["year"] > 1932]
+# test_pool = df_model#[df_model["year"] > 2000]
+# test = test_pool.sample(frac=0.2, random_state=42)
+# train = df_model
+
+test_pool = df_model.copy()
+
+# 20% test
 test = test_pool.sample(frac=0.2, random_state=42)
-train = df_model
+
+# Remaining 80% is training
+train = test_pool.drop(test.index)
+
 
 print("train dataset:")
 print(len(train))
@@ -79,16 +88,27 @@ print("R²:", r2)
 df_plot = test.copy()
 df_plot["predicted"] = y_pred
 
-df_year = df_plot.groupby("year")[["log_oil", "predicted"]].mean()
+# Convert log scale to REAL barrels
+df_plot["actual_barrels"] = np.expm1(df_plot["log_oil"])
+df_plot["pred_barrels"] = np.expm1(df_plot["predicted"])
+
+# Group by year (average per country)
+df_year = df_plot.groupby("year")[["actual_barrels", "pred_barrels"]].mean()
 
 plt.figure(figsize=(12,6))
-plt.plot(df_year.index, df_year["log_oil"], label="Actual (Avg)", linewidth=3)
-plt.plot(df_year.index, df_year["predicted"], label="Predicted (Avg)", linewidth=3)
+plt.plot(df_year.index, df_year["actual_barrels"], label="Actual (Avg)", linewidth=3)
+plt.plot(df_year.index, df_year["pred_barrels"], label="Predicted (Avg)", linewidth=3)
+
 plt.legend()
 plt.title("Overall Model Performance (Average Across All Countries)")
 plt.xlabel("Year")
-plt.ylabel("Oil Production")
+plt.ylabel("Oil Production (Barrels)")    # updated axis label
+plt.ticklabel_format(style="plain", axis="y")  # remove scientific notation formatting
+plt.grid(True, alpha=0.3)
+
 plt.show()
+
+
 
 # print(df["cty_name"].nunique())
 
@@ -100,7 +120,7 @@ plt.show()
 # MSE
 # Pick any index from the test set
 # Choose any index from the test set
-idx = 5
+idx = 6
 
 # Extract values
 year_value = int(test.iloc[idx]["year"])
@@ -129,3 +149,4 @@ print(f"Predicted:        {pred_real:,.2f} barrels")
 print("\n--- Real Scale (Gallons) ---")
 print(f"Actual:           {actual_gallons:,.2f} gallons")
 print(f"Predicted:        {pred_gallons:,.2f} gallons")
+
