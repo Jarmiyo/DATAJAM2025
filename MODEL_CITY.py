@@ -5,12 +5,10 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
 df = pd.read_csv("Oil and Gas 1932-2014.csv")
-print(len(df))
 
 
 df = df.dropna(subset=["oil_prod32_14"])
 
-print(len(df))
 
 # Lag features
 lags = [1, 2, 3, 5, 10]
@@ -41,12 +39,7 @@ target = "log_oil"
 
 df_model = df[["cty_name"] + features + [target]].dropna()
 
-print("full dataset:")
-print(len(df_model))
 
-# test_pool = df_model#[df_model["year"] > 2000]
-# test = test_pool.sample(frac=0.2, random_state=42)
-# train = df_model
 
 test_pool = df_model.copy()
 
@@ -108,21 +101,8 @@ plt.grid(True, alpha=0.3)
 
 plt.show()
 
-
-
-# print(df["cty_name"].nunique())
-
-#importances = model.feature_importances_
-#plt.figure(figsize=(8,4))
-#plt.barh(features, importances)
-#plt.title("Feature Importance")
-#plt.show()
-# MSE
-# Pick any index from the test set
-# Choose any index from the test set
 idx = 6
 
-# Extract values
 year_value = int(test.iloc[idx]["year"])
 
 actual_log = y_test.iloc[idx]
