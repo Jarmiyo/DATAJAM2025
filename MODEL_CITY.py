@@ -10,9 +10,6 @@ print(len(df))
 df = df.dropna(subset=["oil_prod32_14"])
 print(len(df))
 
-
-df_extended = pd.concat([df, future_years], ignore_index=True)
-
 # Lag features
 lags = [1, 2, 3, 5, 10]
 for lag in lags:
